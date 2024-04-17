@@ -1,4 +1,4 @@
-### Hi there 👋
+### Hi there! 👋
 
 I'm Hiep. Most of my open-source projects below are focused on one thing - **to help people learn** 📚.
 
