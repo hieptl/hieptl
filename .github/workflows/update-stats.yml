@@ -1,0 +1,36 @@
+name: Update profile stats
+
+on:
+  schedule:
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-stats
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Refresh the numbers in README.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python3 .github/scripts/update_stats.py
+
+      - name: Publish as the repository's single commit
+        run: |
+          if git diff --quiet -- README.md; then
+            echo "Nothing changed."
+            exit 0
+          fi
+          git config user.name "hieptl"
+          git config user.email "hieptl.developer@gmail.com"
+          git add README.md
+          git commit --amend --no-edit --reset-author
+          git push --force origin HEAD:main
